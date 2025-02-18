@@ -44,14 +44,14 @@ public class GreetingController {
         return "Hellow";
     }
 
-    @PreAuthorize("hasRole('admin')")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     @GetMapping("/admin")
     public String adminEndpoint(){
         return "Hello ADMIN";
     }
 
 
-    @PreAuthorize("hasRole('user')")
+    @PreAuthorize("hasRole('ROLE_USER')")
     @GetMapping("/user")
     public String userEndPoint(){
         return "Hello User";
@@ -74,7 +74,7 @@ public class GreetingController {
         SecurityContextHolder.getContext().setAuthentication(authentication);
         UserDetails userDetails = (UserDetails) authentication.getPrincipal();
 
-        String jwtToken = jwtUtils.getUsernameFromToken(userDetails);
+            String jwtToken = jwtUtils.getUsernameFromToken(userDetails);
 
         List<String > roles = userDetails.getAuthorities().stream()
                 .map(GrantedAuthority::getAuthority)

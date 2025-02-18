@@ -46,9 +46,9 @@ public class SecurityConfig {
         http
                 .cors(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(requests -> requests
-                        .requestMatchers("/h2-console/**").permitAll()
+                        //.requestMatchers("/h2-console/**").permitAll()
                         .requestMatchers("/test").permitAll()
-                        .requestMatchers("/signin").permitAll()
+                        .requestMatchers("/test" , "/signin","/api/signup").permitAll()
                         .anyRequest().authenticated()
                 )
                 .headers(headers -> headers.frameOptions(HeadersConfigurer.FrameOptionsConfig::sameOrigin))
@@ -92,25 +92,25 @@ public class SecurityConfig {
     public UserDetailsService userDetailsService(DataSource dataSource){
         return new JdbcUserDetailsManager(dataSource);
     }
-
-    @Bean
-    public CommandLineRunner initData(UserDetailsService userDetailsService){
-        return args -> {
-            JdbcUserDetailsManager manager = (JdbcUserDetailsManager) userDetailsService;
-            UserDetails user1 = User.withUsername("user1")
-                    .password(passwordEncoder().encode("user1"))
-                    .roles("USER")
-                    .build();
-            UserDetails admin = User.withUsername("admin")
-                    .password(passwordEncoder().encode("admin"))
-                    .roles("ADMIN")
-                    .build();
-
-            JdbcUserDetailsManager userDetailsManager = new JdbcUserDetailsManager(dataSource);
-            userDetailsManager.createUser(user1);
-            userDetailsManager.createUser(admin);
-        };
-    }
+//
+//    @Bean
+//    public CommandLineRunner initData(UserDetailsService userDetailsService){
+//        return args -> {
+//            JdbcUserDetailsManager manager = (JdbcUserDetailsManager) userDetailsService;
+//            UserDetails user1 = User.withUsername("user1")
+//                    .password(passwordEncoder().encode("user1"))
+//                    .roles("USER")
+//                    .build();
+//            UserDetails admin = User.withUsername("admin")
+//                    .password(passwordEncoder().encode("admin"))
+//                    .roles("ADMIN")
+//                    .build();
+//
+//            JdbcUserDetailsManager userDetailsManager = new JdbcUserDetailsManager(dataSource);
+//            userDetailsManager.createUser(user1);
+//            userDetailsManager.createUser(admin);
+//        };
+//    }
 
     @Bean
     public PasswordEncoder passwordEncoder() {
