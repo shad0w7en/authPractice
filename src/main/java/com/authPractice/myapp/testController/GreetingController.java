@@ -28,11 +28,7 @@ import java.util.stream.Collectors;
 @RestController
 public class GreetingController {
 
-    @Autowired
-    private AuthenticationManager authenticationManager;
 
-    @Autowired
-    private JwtUtils jwtUtils;
 
     @GetMapping("/test")
     public String testMethod(){
@@ -58,29 +54,5 @@ public class GreetingController {
     }
 
 
-    @PostMapping("/signin")
-    public ResponseEntity<?> authenticateUser(@RequestBody LoginRequest loginRequest){
-        Authentication authentication;
-        try{
-            authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(loginRequest.getUsername(),loginRequest.getPassword()));
-            System.out.println(authentication.toString());
-        }catch (AuthenticationException exception){
-            //System.out.println(authentication.toString());
-            Map<String , Object> map = new HashMap<>();
-            map.put("message" , "Bad Credentials");
-            map.put("status",false);
-            return new ResponseEntity<Object>(map , HttpStatus.NOT_FOUND);
-        }
-        SecurityContextHolder.getContext().setAuthentication(authentication);
-        UserDetails userDetails = (UserDetails) authentication.getPrincipal();
 
-            String jwtToken = jwtUtils.getUsernameFromToken(userDetails);
-
-        List<String > roles = userDetails.getAuthorities().stream()
-                .map(GrantedAuthority::getAuthority)
-                .toList();
-
-        LoginResponse response = new LoginResponse(jwtToken,userDetails.getUsername() , roles);
-        return ResponseEntity.ok(response);
-    }
 }
