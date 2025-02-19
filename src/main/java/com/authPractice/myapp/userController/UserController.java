@@ -22,6 +22,7 @@ import javax.sql.DataSource;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api")
@@ -82,4 +83,20 @@ public class UserController {
         return ResponseEntity.ok(response);
     }
 
+
+    @GetMapping("/profile")
+    public ResponseEntity<?> getProfile(){
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        UserDetails userDetails = (UserDetails) authentication.getPrincipal();
+
+        Map<String , Object> profile = new HashMap<>();
+        profile.put("username", userDetails.getUsername());
+        profile.put("password" , userDetails.getPassword());
+        profile.put("role" , userDetails.getAuthorities()
+                .stream()
+                .map(GrantedAuthority::getAuthority)
+                .collect(Collectors.toList()));
+        profile.put("message","This is user specific content");
+        return new ResponseEntity<Object>(profile , HttpStatus.OK);
+    }
 }
